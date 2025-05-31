@@ -35,7 +35,7 @@ target_link_libraries(CameraSimulator
 include(FetchContent)
 FetchContent_Declare(
   googletest
-  URL https://github.com/google/googletest/archive/release-1.14.0.zip
+  URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip
 )
 FetchContent_MakeAvailable(googletest)
 
@@ -43,8 +43,8 @@ enable_testing()
 
 file(GLOB_RECURSE TEST_SRC CONFIGURE_DEPENDS "tests/*.cpp")
 
-add_executable(test_runner ${TEST_SRC})
-target_include_directories(test_runner PRIVATE src)
-target_link_libraries(test_runner PRIVATE gtest_main fmt::fmt)
+add_executable(CameraSimulatorTest_Runner ${TEST_SRC} ${SIM_SRC})
+target_include_directories(CameraSimulatorTest_Runner PRIVATE src)
+target_link_libraries(CameraSimulatorTest_Runner PRIVATE gtest_main fmt::fmt ${GSTREAMER_LIBRARIES})
 
-add_test(NAME LoggerTests COMMAND test_runner)
+add_test(NAME LoggerTests COMMAND CameraSimulatorTest_Runner)

@@ -1,12 +1,12 @@
 #include <gtest/gtest.h>
-#include "../src/utils/Logger.h"
+#include "../src/utils/CamSimLogger.h"
 #include <fstream>
 #include <filesystem>
 #include <regex>
 
 TEST(LoggerTest, WritesLogFileWithInfo) {
     std::string testMessage = "Logger test info message.";
-    LOG_INFO(testMessage);
+    CAMSIMLOG_INFO(testMessage);
 
     std::string todayLog;
     {

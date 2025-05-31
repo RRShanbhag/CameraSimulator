@@ -16,7 +16,17 @@ include_directories(
 link_directories(
     ${GSTREAMER_LIBRARY_DIRS}
 )
-add_subdirectory(external/fmt)
+
+include(FetchContent)
+
+FetchContent_Declare(
+  fmt
+  GIT_REPOSITORY https://github.com/fmtlib/fmt.git
+  GIT_TAG 9.1.0 # Or the version you want
+)
+
+FetchContent_MakeAvailable(fmt)
+
 add_definitions(${GSTREAMER_CFLAGS_OTHER})
 
 # Automatically include all .cpp files under src/
@@ -45,6 +55,6 @@ file(GLOB_RECURSE TEST_SRC CONFIGURE_DEPENDS "tests/*.cpp")
 
 add_executable(CameraSimulatorTest_Runner ${TEST_SRC} ${SIM_SRC})
 target_include_directories(CameraSimulatorTest_Runner PRIVATE src)
-target_link_libraries(CameraSimulatorTest_Runner PRIVATE gtest_main fmt::fmt ${GSTREAMER_LIBRARIES})
+target_link_libraries(CameraSimulatorTest_Runner PRIVATE gtest_main fmt::fmt-header-only ${GSTREAMER_LIBRARIES})
 
 add_test(NAME LoggerTests COMMAND CameraSimulatorTest_Runner)

@@ -4,7 +4,7 @@
 #include <filesystem>
 #include <regex>
 
-TEST(LoggerTest, WritesLogFileWithInfo) {
+TEST(CamSimLoggerTest, WritesLogFileWithInfo) {
     std::string testMessage = "Logger test info message.";
     CAMSIMLOG_INFO(testMessage);
 

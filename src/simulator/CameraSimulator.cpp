@@ -1,13 +1,14 @@
 #include "CameraSimulator.h"
+#include "../utils/CamSimLogger.h"
 #include <iostream>
 
 bool CameraSimulator::initialize() {
-    std::cout << "[Simulator] Initializing...\n";
+    CAMSIMLOG_INFO("[Simulator] Initializing...");
     // TODO: load config, set up pipeline, etc.
     return true;
 }
 
 void CameraSimulator::run() {
-    std::cout << "[Simulator] Running main loop...\n";
+    CAMSIMLOG_INFO("[Simulator] Running main loop...");
     // TODO: feed frames to pipeline or device
 }

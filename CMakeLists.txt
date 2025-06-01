@@ -51,10 +51,14 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
+add_test(NAME CamSimLoggerTests COMMAND CameraSimulatorTest_Runner)
+
+# Automatically include all .cpp files under tests/
 file(GLOB_RECURSE TEST_SRC CONFIGURE_DEPENDS "tests/*.cpp")
 
-add_executable(CameraSimulatorTest_Runner ${TEST_SRC} ${SIM_SRC})
-target_include_directories(CameraSimulatorTest_Runner PRIVATE src)
-target_link_libraries(CameraSimulatorTest_Runner PRIVATE gtest_main fmt::fmt-header-only ${GSTREAMER_LIBRARIES})
+# Automatically include all .cpp files under src/ except the main.cpp
+file(GLOB_RECURSE SIMT_SRC CONFIGURE_DEPENDS "src/*/*.cpp")
 
-add_test(NAME LoggerTests COMMAND CameraSimulatorTest_Runner)
+add_executable(CameraSimulatorTest_Runner ${TEST_SRC} ${SIMT_SRC})
+target_include_directories(CameraSimulatorTest_Runner PRIVATE src)
+target_link_libraries(CameraSimulatorTest_Runner PRIVATE gtest fmt::fmt-header-only ${GSTREAMER_LIBRARIES})

@@ -1,8 +1,8 @@
 #include "utils/CamSimLogger.h"
 #include "simulator/CameraSimulator.h"
-
+#include <iostream>
 int main(int argc, char* argv[]) {
-    CAMSIMLOG_INFO("[Camera Simulator] Starting virtual camera system...\n");
+    std::cout << "[Camera Simulator] Starting virtual camera system..." << std::endl;
 
     CameraSimulator simulator;
     if (!simulator.initialize()) {
@@ -12,6 +12,6 @@ int main(int argc, char* argv[]) {
 
     simulator.run();
 
-    CAMSIMLOG_INFO("[Camera Simulator] Shutting down.\n");
+    std::cout << "[Camera Simulator] Shutting down." << std::endl;
     return 0;
 }

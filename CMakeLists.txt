@@ -29,15 +29,26 @@ FetchContent_MakeAvailable(fmt)
 
 add_definitions(${GSTREAMER_CFLAGS_OTHER})
 
-# Automatically include all .cpp files under src/
-file(GLOB_RECURSE SIM_SRC CONFIGURE_DEPENDS "src/*.cpp")
+# Utils Source
+file(GLOB UTILS_SRC CONFIGURE_DEPENDS "src/utils/*.cpp")
+
+# FrameSource Library
+file(GLOB FRAME_SRC CONFIGURE_DEPENDS "src/framesource/*.cpp")
+add_library(FrameSource ${FRAME_SRC})
+
+# Simulator Library
+file(GLOB SIM_SRC CONFIGURE_DEPENDS "src/simulator/*.cpp")
+add_library(Simulator ${SIM_SRC} ${UTILS_SRC})
+target_link_libraries(Simulator PUBLIC FrameSource fmt::fmt-header-only)
 
 # Create the executable
-add_executable(CameraSimulator ${SIM_SRC})
+# Configure Simulator source files with all dependent sources.
+file(GLOB MAIN_SRC CONFIGURE_DEPENDS "src/main.cpp")
+add_executable(CameraSimulator ${MAIN_SRC})
 
 
 target_link_libraries(CameraSimulator
-    PRIVATE fmt::fmt-header-only
+    PRIVATE Simulator
     ${GSTREAMER_LIBRARIES}
 )
 
@@ -56,9 +67,14 @@ add_test(NAME CamSimLoggerTests COMMAND CameraSimulatorTest_Runner)
 # Automatically include all .cpp files under tests/
 file(GLOB_RECURSE TEST_SRC CONFIGURE_DEPENDS "tests/*.cpp")
 
-# Automatically include all .cpp files under src/ except the main.cpp
-file(GLOB_RECURSE SIMT_SRC CONFIGURE_DEPENDS "src/*/*.cpp")
-
-add_executable(CameraSimulatorTest_Runner ${TEST_SRC} ${SIMT_SRC})
+add_executable(CameraSimulatorTest_Runner ${TEST_SRC})
 target_include_directories(CameraSimulatorTest_Runner PRIVATE src)
-target_link_libraries(CameraSimulatorTest_Runner PRIVATE gtest fmt::fmt-header-only ${GSTREAMER_LIBRARIES})
+target_link_libraries(CameraSimulatorTest_Runner
+    PRIVATE
+    Simulator
+    FrameSource
+    gtest
+    gtest_main
+    fmt::fmt-header-only
+    ${GSTREAMER_LIBRARIES}
+)

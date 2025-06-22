@@ -72,6 +72,7 @@ CamSimStatusType DiskFrameSource::IFrameSource_Init(std::string location, int wi
     if(eError != CamSimErrorType::E_ERRORCODE_NOERROR)
     {
         CAMSIMLOG_ERROR(CAMSIMERRORSTRING(eError));
+        eStatus = CamSimStatusType::E_STATUS_FAILURE;
     }
     return eStatus;
 }
@@ -84,6 +85,7 @@ CamSimStatusType DiskFrameSource::IFrameSource_GetNextFrame(IFrame& frame)
     if(eError != CamSimErrorType::E_ERRORCODE_NOERROR)
     {
         CAMSIMLOG_ERROR(CAMSIMERRORSTRING(eError));
+        eStatus = CamSimStatusType::E_STATUS_FAILURE;
     }
     return eStatus;
 }
@@ -96,6 +98,7 @@ CamSimStatusType DiskFrameSource::IFrameSource_Start()
     if(eError != CamSimErrorType::E_ERRORCODE_NOERROR)
     {
         CAMSIMLOG_ERROR(CAMSIMERRORSTRING(eError));
+        eStatus = CamSimStatusType::E_STATUS_FAILURE;
     }
     return eStatus;
 }
@@ -109,6 +112,7 @@ CamSimStatusType DiskFrameSource::IFrameSource_Stop()
     if(eError != CamSimErrorType::E_ERRORCODE_NOERROR)
     {
         CAMSIMLOG_ERROR(CAMSIMERRORSTRING(eError));
+        eStatus = CamSimStatusType::E_STATUS_FAILURE;
     }
     return eStatus;
 }

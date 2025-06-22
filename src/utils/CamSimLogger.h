@@ -1,9 +1,8 @@
 #pragma once
 
 #include <string>
-#include <fmt/core.h>
 #include <iostream>
-
+#include <cstring>
 enum class CamSimLogLevel { INFO, WARN, ERROR };
 
 // handy filename‐only macro:
@@ -15,8 +14,11 @@ enum class CamSimLogLevel { INFO, WARN, ERROR };
 #endif
 
 #define CAMSIMLOG(level, fmt, ...)                                          do{                                                                    \
-                                                                                char _buf[CAMSIM_LOG_BUFFER_SIZE];                                  \
-                                                                                std::snprintf(_buf, sizeof(_buf), fmt, ##__VA_ARGS__);              \
+                                                                                char _buf[CAMSIM_LOG_BUFFER_SIZE];                                 \
+                                                                                if (sizeof(#__VA_ARGS__) > 1)                                      \
+                                                                                  std::snprintf(_buf, sizeof(_buf), fmt, ##__VA_ARGS__);           \
+                                                                                else                                                               \
+                                                                                  std::snprintf(_buf, sizeof(_buf), "%s", fmt);                    \
                                                                                 CamSimLogger::logRaw(level,                                        \
                                                                                                     __FILENAME__,                                  \
                                                                                                     __FUNCTION__,                                  \
@@ -32,12 +34,6 @@ public:
                        const char* function,
                        int line,
                        const char* message);
-private:
-    static void writeLog(CamSimLogLevel level,
-                         const std::string& message,
-                         const char* file,
-                         const char* function,
-                         int line);
     static std::string getTimestamp();
     static std::string getLogFileName();
     static std::string logLevelToString(CamSimLogLevel level);

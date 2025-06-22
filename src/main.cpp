@@ -3,6 +3,11 @@
 #include "utils/CamSimCommons.h"
 #include <iostream>
 int main(int argc, char* argv[]) {
+    if(argc > 1 && argv != nullptr)
+    {
+
+    }
+    
     std::cout << "[Camera Simulator] Starting virtual camera system..." << std::endl;
 
     CameraSimulator simulator;

@@ -1,5 +1,6 @@
 #include "utils/CamSimLogger.h"
 #include "simulator/CameraSimulator.h"
+#include "utils/CamSimCommons.h"
 #include <iostream>
 int main(int argc, char* argv[]) {
     std::cout << "[Camera Simulator] Starting virtual camera system..." << std::endl;

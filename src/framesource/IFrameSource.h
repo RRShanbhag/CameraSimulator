@@ -14,20 +14,36 @@ enum class IFrameFormat
     E_UYVY 
 };
 
-struct Frame {
+struct IFrame {
     unsigned char* data = nullptr;
     int width = 0;
     int height = 0;
     IFrameFormat format = IFrameFormat::E_UNKNOWN;
     std::chrono::steady_clock::time_point timestamp;
+    int frameSize = 0;
+
+    ~IFrame()
+    {
+        if(data != nullptr)
+            delete[] data;
+        data = nullptr;
+        width = 0;
+        height = 0;
+        format = IFrameFormat::E_UNKNOWN;
+        frameSize = 0;
+    }
 };
 
 class IFrameSource {
+
+protected:
+    IFrame* m_pCurrentFrame = nullptr;
+
 public:
     virtual ~IFrameSource() = default;
 
-    virtual CamSimStatusType IFrameSource_Init(int width, int height, IFrameFormat format, int fps, bool loop) = 0;
-    virtual CamSimStatusType IFrameSource_GetNextFrame(Frame& frame) = 0;
+    virtual CamSimStatusType IFrameSource_Init(std::string location, int width, int height, IFrameFormat format, int fps, bool loop) = 0;
+    virtual CamSimStatusType IFrameSource_GetNextFrame(IFrame& frame) = 0;
 
     virtual CamSimStatusType IFrameSource_Start() = 0;
     virtual CamSimStatusType IFrameSource_Stop() = 0;

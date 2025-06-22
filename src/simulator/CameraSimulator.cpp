@@ -1,5 +1,6 @@
 #include "CameraSimulator.h"
 #include "../utils/CamSimLogger.h"
+#include "../utils/CamSimCommons.h"
 #include <iostream>
 
 bool CameraSimulator::initialize() {

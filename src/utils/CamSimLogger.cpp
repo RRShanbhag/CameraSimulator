@@ -7,20 +7,25 @@
 #include <sstream>
 #include <iomanip>
 
-void CamSimLogger::writeLog(CamSimLogLevel level, const std::string& message,
-                      const char* file, const char* function, int line) {
+void CamSimLogger::logRaw(CamSimLogLevel level,
+                         const char* file,
+                         const char* function,
+                         int line,
+                         const char* message)
+{
     ensureLogDirectoryExists();
+    std::ofstream ofs{ getLogFileName(), std::ios::app };
+    if (!ofs) return;
 
-    std::ofstream logFile(getLogFileName(), std::ios::app);
-    if (!logFile.is_open()) {
-        std::cerr << "[Logger] Failed to open log file.\n";
-        return;
-    }
+    // timestamp
+    auto now = std::chrono::system_clock::now();
+    auto t = std::chrono::system_clock::to_time_t(now);
+    std::tm tm; localtime_r(&t,&tm);
 
-    logFile << "[" << getTimestamp() << "] "
-            << logLevelToString(level) << " "
-            << "(" << file << ":" << function << ":" << line << ") "
-            << message << "\n";
+    ofs << "[" << std::put_time(&tm, "%Y-%m-%d %H:%M:%S") << "] "
+        << "[" << logLevelToString(level) << "] "
+        << "(" << file << ":" << function << ":" << line << ") "
+        << message << "\n";
 }
 
 std::string CamSimLogger::getTimestamp() {

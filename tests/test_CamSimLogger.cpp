@@ -1,12 +1,17 @@
 #include <gtest/gtest.h>
 #include "../src/utils/CamSimLogger.h"
+#include "../src/utils/CamSimCommons.h"
 #include <fstream>
 #include <filesystem>
 #include <regex>
 
+/**
+ * @brief Checks if logging works on a new file. 
+ * 
+ */
 TEST(CamSimLoggerTest, WritesLogFileWithInfo) {
     std::string testMessage = "Logger test info message.";
-    CAMSIMLOG_INFO(testMessage);
+    CAMSIMLOG_INFO(testMessage.c_str());
 
     std::string todayLog;
     {

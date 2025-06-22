@@ -1,6 +1,6 @@
 #include "FrameSourceRunner.h"
 
-CamSimStatusType FrameSource_Run(std::shared_ptr<IFrameSource> src, std::function<void(Frame)> frameCallback)
+CamSimStatusType FrameSource_Run(std::shared_ptr<IFrameSource> src, std::function<void(IFrame)> frameCallback)
 {
     CamSimStatusType eStatus = CamSimStatusType::E_STATUS_SUCCESS;
 

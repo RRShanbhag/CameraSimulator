@@ -13,6 +13,6 @@ class FrameSourceRunner
     CamSimErrorType m_eError = CamSimErrorType::E_ERRORCODE_NOERROR;
 
 public:
-    CamSimStatusType FrameSource_Run(std::shared_ptr<IFrameSource> src, std::function<void(Frame)> frameCallback);
+    CamSimStatusType FrameSource_Run(std::shared_ptr<IFrameSource> src, std::function<void(IFrame)> frameCallback);
     CamSimStatusType FrameSource_Stop();
 };

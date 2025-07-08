@@ -11,17 +11,29 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra -Wno-format-security")
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(GSTREAMER REQUIRED gstreamer-1.0>=1.14)
 
-include(FetchContent)
-
-# Fetch fmt
-FetchContent_Declare(
-  fmt
-  GIT_REPOSITORY https://github.com/fmtlib/fmt.git
-  GIT_TAG 9.1.0
+#Fetch FFMPEG Components
+set(FFMPEG_COMPONENTS
+    avformat
+    avcodec
+    avutil
+    swscale
 )
-FetchContent_MakeAvailable(fmt)
+
+foreach(lib ${FFMPEG_COMPONENTS})
+    pkg_check_modules(FFMPEG_${lib} REQUIRED lib${lib})
+endforeach()
+
+set(FFMPEG_INCLUDE_DIRS "")
+set(FFMPEG_LIBRARIES "")
+foreach(lib ${FFMPEG_COMPONENTS})
+    list(APPEND FFMPEG_INCLUDE_DIRS ${FFMPEG_${lib}_INCLUDE_DIRS})
+    list(APPEND FFMPEG_LIBRARIES ${FFMPEG_${lib}_LIBRARIES})
+endforeach()
+message(STATUS "FFmpeg include dirs: ${FFMPEG_INCLUDE_DIRS}")
+message(STATUS "FFmpeg libraries: ${FFMPEG_LIBRARIES}")
 
 # Fetch GoogleTest
+include(FetchContent)
 FetchContent_Declare(
   googletest
   URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip
@@ -33,8 +45,8 @@ FetchContent_MakeAvailable(googletest)
 # --------------------------
 file(GLOB FRAME_SRC CONFIGURE_DEPENDS "src/framesource/*.cpp")
 add_library(FrameSource ${FRAME_SRC})
-target_include_directories(FrameSource PUBLIC ${CMAKE_SOURCE_DIR}/src/framesource ${CMAKE_SOURCE_DIR}/src/utils)
-target_link_libraries(FrameSource PUBLIC fmt::fmt-header-only)
+target_include_directories(FrameSource PUBLIC ${CMAKE_SOURCE_DIR}/src/framesource ${CMAKE_SOURCE_DIR}/src/utils ${FFMPEG_INCLUDE_DIRS})
+target_link_libraries(FrameSource PUBLIC ${FFMPEG_LIBRARIES})
 
 # --------------------------
 # Simulator Library
@@ -52,7 +64,7 @@ add_executable(CameraSimulator src/main.cpp)
 target_link_libraries(CameraSimulator
     PRIVATE
     Simulator
-    ${GSTREAMER_LIBRARIES}
+    ${FFMPEG_LIBRARIES}
 )
 
 # --------------------------
@@ -61,14 +73,13 @@ target_link_libraries(CameraSimulator
 enable_testing()
 file(GLOB_RECURSE TEST_SRC CONFIGURE_DEPENDS "tests/*.cpp")
 add_executable(CameraSimulatorTest_Runner ${TEST_SRC})
-target_include_directories(CameraSimulatorTest_Runner PRIVATE src)
+target_include_directories(CameraSimulatorTest_Runner PRIVATE src ${FFMPEG_INCLUDE_DIRS})
 target_link_libraries(CameraSimulatorTest_Runner
     PRIVATE
     Simulator
     gtest
     gtest_main
-    fmt::fmt-header-only
-    ${GSTREAMER_LIBRARIES}
+    ${FFMPEG_LIBRARIES}
 )
 
 add_test(NAME AllTests COMMAND CameraSimulatorTest_Runner)

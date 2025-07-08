@@ -3,6 +3,7 @@
 #include <vector>
 #include <cstdint>
 #include <chrono>
+#include <memory>
 #include "../utils/CamSimCommons.h"
 enum class IFrameFormat 
 { 
@@ -15,6 +16,7 @@ enum class IFrameFormat
 };
 
 struct IFrame {
+    std::unique_ptr<unsigned char[]> dataOwner = nullptr;
     unsigned char* data = nullptr;
     int width = 0;
     int height = 0;
@@ -24,13 +26,21 @@ struct IFrame {
 
     ~IFrame()
     {
-        if(data != nullptr)
-            delete[] data;
         data = nullptr;
         width = 0;
         height = 0;
         format = IFrameFormat::E_UNKNOWN;
         frameSize = 0;
+    }
+
+    void ShallowCopy(IFrame& frame)
+    {
+        data = frame.dataOwner.get();
+        width = frame.width;
+        height = frame.height;
+        format = frame.format;
+        frameSize = frame.frameSize;
+        timestamp = frame.timestamp;
     }
 };
 
@@ -38,6 +48,7 @@ class IFrameSource {
 
 protected:
     IFrame* m_pCurrentFrame = nullptr;
+    bool m_bIsIFrameStarted = false;
 
 public:
     virtual ~IFrameSource() = default;

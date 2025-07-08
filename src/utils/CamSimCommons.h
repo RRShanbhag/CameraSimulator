@@ -9,6 +9,7 @@ enum class CamSimErrorType : int
     E_ERRORCODE_INITIALIZATION_FAILED,
     E_ERRORCODE_UNKNOWN_FORMAT,
     E_ERRORCODE_INVALID_FILE_OR_DIRECTORY,
+    E_ERRORCODE_FRAME_GRABBING_FAILURE,
     E_ERRORCODE_TOTAL_ERRORS
 };
 
@@ -27,6 +28,7 @@ enum class CamSimStatusType : int
         case CamSimErrorType::E_ERRORCODE_INITIALIZATION_FAILED: return "ERRORCODE_INITIALIZATION_FAILED"; \
         case CamSimErrorType::E_ERRORCODE_UNKNOWN_FORMAT: return "ERRORCODE_UNKNOWN_FORMAT"; \
         case CamSimErrorType::E_ERRORCODE_INVALID_FILE_OR_DIRECTORY: return "ERRORCODE_INVALID_FILE_OR_DIRECTORY"; \
+        case CamSimErrorType::E_ERRORCODE_FRAME_GRABBING_FAILURE: return "ERRORCODE_FRAME_GRABBING_FAILURE"; \
         default: return "UNKNOWN_ERRORCODE";                 \
     }                                                        \
 }()

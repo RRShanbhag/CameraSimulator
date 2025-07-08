@@ -2,13 +2,28 @@
 #include "IFrameSource.h"
 #include <string>
 
+extern "C" {
+#include <libavformat/avformat.h>
+#include <libavcodec/avcodec.h>
+#include <libswscale/swscale.h>
+#include <libavutil/imgutils.h>
+}
+
 class DiskFrameSource : public IFrameSource 
 {
 private:
     std::vector<std::string> m_FilePaths;
-    size_t m_nCurrentIndex = 0;
+    int m_nCurrentIndex = -1;
     bool m_bLoopBack = false;
     int m_nFPS;
+
+    AVFormatContext* m_pAVFormatCtx = nullptr;
+    AVCodecContext* m_pAVCodecCtx = nullptr;
+    SwsContext* m_pSwsCtx = nullptr;
+    AVPacket* m_pAVPacket = nullptr;
+    AVFrame* m_pAVConvertedFrame = nullptr;
+    unsigned char* m_pAVFrameBuffer = nullptr;
+    int m_nVideoStreamIndex = -1;
 
 public:
     DiskFrameSource();
@@ -21,6 +36,8 @@ public:
 private:
     int CalculateFrameSize(int width, int height, IFrameFormat fmt);
     int PopulateVideoFiles(const std::string& directoryPath, std::vector<std::string>& FilePaths);
+    AVPixelFormat GetAVPixelFormatFromIFrameFormat(IFrameFormat fmt);
+    IFrameFormat GetIFrameFormatFromAVPixelFormat(AVPixelFormat fmt);
 
 public: 
     std::vector<std::string>& GetFilePaths();

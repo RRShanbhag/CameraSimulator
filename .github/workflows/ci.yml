@@ -17,7 +17,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt update
-        sudo apt install -y cmake g++ libgstreamer1.0-dev libfmt-dev ffmpeg
+        sudo apt install -y cmake g++ libgstreamer1.0-dev libfmt-dev libavcodec-dev libavformat-dev libavutil-dev libswscale-dev pkg-config
 
     - name: Configure with CMake
       run: cmake -B build -DCMAKE_BUILD_TYPE=Debug

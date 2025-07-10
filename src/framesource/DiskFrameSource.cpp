@@ -164,7 +164,7 @@ CamSimStatusType DiskFrameSource::IFrameSource_Start()
     CamSimErrorType eError = CamSimErrorType::E_ERRORCODE_NOERROR;
     int numBytes = 0;
     AVCodecParameters* codecPar = nullptr;
-    AVCodec* codec = nullptr;
+    const AVCodec* codec;
 
     if(m_nCurrentIndex <= -1)
     {

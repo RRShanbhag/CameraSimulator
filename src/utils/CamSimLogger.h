@@ -38,6 +38,8 @@ public:
     static std::string getLogFileName();
     static std::string logLevelToString(CamSimLogLevel level);
     static void ensureLogDirectoryExists();
+    static int WriteRawFrameToFile(const char *fileName, const int frameLen, unsigned char *frameBuffer);
+    static int ReadRawFrameFromFile(const char *fileName, const int pixelSize, const int noOfPixel, unsigned char *frameBuffer);
 };
 
 #define CAMSIMLOG_INFO(fmt, ...)                                CAMSIMLOG(CamSimLogLevel::INFO,  fmt, ##__VA_ARGS__)

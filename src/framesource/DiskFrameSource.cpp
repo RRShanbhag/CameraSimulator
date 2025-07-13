@@ -32,6 +32,43 @@ DiskFrameSource::~DiskFrameSource()
     m_nCurrentIndex = 0;
 } 
 
+
+DiskFrameSource::DiskFrameSource(DiskFrameSource&& other) noexcept
+    : m_FilePaths(std::move(other.m_FilePaths)) 
+{
+    m_nCurrentIndex = other.m_nCurrentIndex;
+    m_bLoopBack = other.m_bLoopBack;
+    m_nFPS = other.m_nFPS;
+
+    m_pAVFormatCtx = other.m_pAVFormatCtx;
+    m_pAVCodecCtx = other.m_pAVCodecCtx;
+    m_pSwsCtx = other.m_pSwsCtx;
+    m_pAVPacket = other.m_pAVPacket;
+    m_pAVConvertedFrame = other.m_pAVConvertedFrame;
+    m_pAVFrameBuffer = other.m_pAVFrameBuffer;
+    m_nVideoStreamIndex = other.m_nVideoStreamIndex;
+}
+
+DiskFrameSource& DiskFrameSource::operator=(DiskFrameSource&& other) noexcept
+{
+    if (this != &other)
+    {
+        m_FilePaths = std::move(other.m_FilePaths); 
+        m_nCurrentIndex = other.m_nCurrentIndex;
+        m_bLoopBack = other.m_bLoopBack;
+        m_nFPS = other.m_nFPS;
+
+        m_pAVFormatCtx = other.m_pAVFormatCtx;
+        m_pAVCodecCtx = other.m_pAVCodecCtx;
+        m_pSwsCtx = other.m_pSwsCtx;
+        m_pAVPacket = other.m_pAVPacket;
+        m_pAVConvertedFrame = other.m_pAVConvertedFrame;
+        m_pAVFrameBuffer = other.m_pAVFrameBuffer;
+        m_nVideoStreamIndex = other.m_nVideoStreamIndex;
+    }
+    return *this;
+}
+
 /**
  * @brief DiskFrameSource::IFrameSource_Init
  * Input Frame Source initialization of type file based present on the disk.
@@ -81,6 +118,7 @@ CamSimStatusType DiskFrameSource::IFrameSource_Init(std::string location, int wi
 
     if(eError != CamSimErrorType::E_ERRORCODE_NOERROR)
     {
+        m_eError = eError;
         CAMSIMLOG_ERROR(CAMSIMERRORSTRING(eError));
         eStatus = CamSimStatusType::E_STATUS_FAILURE;
     }
@@ -153,6 +191,7 @@ CamSimStatusType DiskFrameSource::IFrameSource_GetNextFrame(IFrame& frame)
 
     if(eError != CamSimErrorType::E_ERRORCODE_NOERROR)
     {
+        m_eError = eError;
         CAMSIMLOG_ERROR(CAMSIMERRORSTRING(eError));
         eStatus = CamSimStatusType::E_STATUS_FAILURE;
     }
@@ -248,6 +287,7 @@ cleanup:
     if(eError != CamSimErrorType::E_ERRORCODE_NOERROR)
     {
         IFrameSource_Stop();  // Clean all resources
+        m_eError = eError;
         CAMSIMLOG_ERROR("DiskFrameSource Start Failed with error: %s", CAMSIMERRORSTRING(eError));
         eStatus = CamSimStatusType::E_STATUS_FAILURE;
     }
@@ -307,6 +347,7 @@ CamSimStatusType DiskFrameSource::IFrameSource_Stop()
 
     if(eError != CamSimErrorType::E_ERRORCODE_NOERROR)
     {
+        m_eError = eError;
         CAMSIMLOG_ERROR(CAMSIMERRORSTRING(eError));
         eStatus = CamSimStatusType::E_STATUS_FAILURE;
     }
@@ -360,6 +401,7 @@ int DiskFrameSource::CalculateFrameSize(int width, int height, IFrameFormat fmt)
 
     if(eError != CamSimErrorType::E_ERRORCODE_NOERROR)
     {
+        m_eError = eError;
         CAMSIMLOG_ERROR(CAMSIMERRORSTRING(eError));
     }
     return nFrameSize;
@@ -401,6 +443,7 @@ int DiskFrameSource::PopulateVideoFiles(const std::string& directoryPath,
 
     if(eError != CamSimErrorType::E_ERRORCODE_NOERROR)
     {
+        m_eError = eError;
         CAMSIMLOG_ERROR(CAMSIMERRORSTRING(eError));
     }
     return totalFileCount;
@@ -458,6 +501,7 @@ AVPixelFormat DiskFrameSource::GetAVPixelFormatFromIFrameFormat(IFrameFormat fmt
 
     if(eError != CamSimErrorType::E_ERRORCODE_NOERROR)
     {
+        m_eError = eError;
         CAMSIMLOG_ERROR(CAMSIMERRORSTRING(eError));
     }
     return avPixFmt;
@@ -509,6 +553,7 @@ IFrameFormat DiskFrameSource::GetIFrameFormatFromAVPixelFormat(AVPixelFormat fmt
 
     if(eError != CamSimErrorType::E_ERRORCODE_NOERROR)
     {
+        m_eError = eError;
         CAMSIMLOG_ERROR(CAMSIMERRORSTRING(eError));
     }
     return iFrameFmt;

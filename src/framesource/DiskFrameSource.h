@@ -26,8 +26,18 @@ private:
     int m_nVideoStreamIndex = -1;
 
 public:
+    // Constructor and Destructor
     DiskFrameSource();
     ~DiskFrameSource();
+
+    // Copy Constructor and Assignment
+    DiskFrameSource(const DiskFrameSource&) = delete;
+    DiskFrameSource& operator=(const DiskFrameSource&) = delete;
+
+    // Move Constructors and Assignment
+    DiskFrameSource(DiskFrameSource&& other) noexcept;
+    DiskFrameSource& operator=(DiskFrameSource&& other) noexcept;
+
     CamSimStatusType IFrameSource_Init(std::string location, int width, int height, IFrameFormat fmt, int fps, bool loop) override;
     CamSimStatusType IFrameSource_GetNextFrame(IFrame& frame) override;
     CamSimStatusType IFrameSource_Start() override;

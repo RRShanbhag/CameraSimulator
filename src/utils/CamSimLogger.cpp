@@ -7,6 +7,10 @@
 #include <sstream>
 #include <iomanip>
 
+#include <dirent.h>
+#include <stdlib.h>
+#include <string.h>
+
 void CamSimLogger::logRaw(CamSimLogLevel level,
                          const char* file,
                          const char* function,
@@ -59,4 +63,37 @@ std::string CamSimLogger::logLevelToString(CamSimLogLevel level) {
 
 void CamSimLogger::ensureLogDirectoryExists() {
     std::filesystem::create_directories("logs");
+}
+
+int CamSimLogger::WriteRawFrameToFile(const char *fileName, const int frameLen, unsigned char *frameBuffer)
+{
+    FILE *fd = fopen(fileName, "wb");
+    if (fd != NULL)
+    {
+        fwrite(frameBuffer, sizeof(unsigned char), frameLen, fd);
+        fflush(fd);
+        fclose(fd);
+    }
+    else
+    {
+        printf("Error in writing raw frame to file\n");
+        return -1;
+    }
+    return 0;
+}
+
+int CamSimLogger::ReadRawFrameFromFile(const char *fileName, const int pixelSize, const int noOfPixel, unsigned char *frameBuffer)
+{
+    FILE *fd = fopen(fileName, "r");
+    if (fd != NULL)
+    {
+        fread(frameBuffer, pixelSize, noOfPixel, fd);
+        fclose(fd);
+    }
+    else
+    {
+        printf("Error in reading raw frame from file\n");
+        return -1;
+    }
+    return 0;
 }

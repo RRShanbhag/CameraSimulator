@@ -15,11 +15,26 @@ This tool is ideal for:
 ## Features
 
 - 🧱 Modular and testable C++ components
+- 🎥 **FrameSource module** with real-time frame loading from video/image files using FFmpeg
 - 🧪 Unit tests using GoogleTest
 - 📂 Logger with timestamped file output
 - 🔁 GitHub Actions CI (build and test on every push/PR)
 - 🔧 CMake-based build system
 - 🧪 Future support: simulated frame generation, sensor timing, and V4L2 loopback
+
+---
+
+## FrameSource Module
+
+The `FrameSource` subsystem provides frame acquisition to the rest of the system and currently supports:
+
+- ✅ **DiskFrameSource**: Loads frames from images or video files using FFmpeg.
+- ✅ Provides real-time frame delivery at configured FPS.
+- ✅ Designed for plug-and-play with `FrameSourceRunner`, which controls acquisition timing and forwards frames via a callback.
+- ✅ Supports formats like RGB24, GRAY8, GRAY16 (planned), etc.
+- ✅ Future support: camera hardware input, synthetic frame generator, network stream input.
+
+The `FrameSourceRunner` orchestrates reading frames at regular intervals, simulating sensor-like behavior. It runs the grabbing loop in a separate thread and provides RAII safety and error reporting.
 
 ---
 
@@ -29,7 +44,8 @@ This tool is ideal for:
 - C++20 compiler (e.g., `g++`, `clang++`)
 - `cmake >= 3.15`
 - `libfmt-dev`
-- `libgstreamer1.0-dev`
+- `libgstreamer1.0-dev` (for future modules)
+- `libavformat-dev`, `libavcodec-dev`, `libswscale-dev` (FFmpeg libraries)
 
 ### Build
 

@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ '**' ]
   pull_request:
-    branches: [ main ]
+    branches: [ '**' ]
 
 jobs:
   build-and-test:
@@ -17,7 +17,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt update
-        sudo apt install -y cmake g++ libgstreamer1.0-dev libfmt-dev
+        sudo apt install -y cmake g++ libgstreamer1.0-dev libfmt-dev libavcodec-dev libavformat-dev libavutil-dev libswscale-dev pkg-config
 
     - name: Configure with CMake
       run: cmake -B build -DCMAKE_BUILD_TYPE=Debug
@@ -28,4 +28,4 @@ jobs:
     - name: Run unit tests
       run: |
         cd build
-        ctest --output-on-failure
+        ctest --output-on-failure -V

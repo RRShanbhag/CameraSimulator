@@ -18,7 +18,7 @@ public:
     FrameSourceRunner() = delete;
 
     // Explicit constructor
-    explicit FrameSourceRunner(IFrameSourceType sourceType);
+    explicit FrameSourceRunner(FrameSourceType sourceType);
 
     // Destructor (RAII: Stop thread if running)
     ~FrameSourceRunner();
@@ -34,7 +34,7 @@ public:
     FrameSourceRunner& operator=(FrameSourceRunner&& other) noexcept;
 
     // Run and Stop interface
-    CamSimStatusType FrameSource_Run(std::function<void(const IFrame&, CamSimErrorType eError, CamSimStatusType eStatus)> frameCallback);
+    CamSimStatusType FrameSource_Run(std::function<void(const Frame&, CamSimErrorType eError, CamSimStatusType eStatus)> frameCallback);
     CamSimStatusType FrameSource_Stop();
 
     // Query error state

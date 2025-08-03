@@ -12,7 +12,7 @@ int main(int argc, char* argv[]) {
     std::cout << "[Camera Simulator] Starting virtual camera system..." << std::endl;
 
     CameraSimulator simulator;
-    if (!simulator.CameraSimulator_Initialize(IFrameSourceType::E_FRMSRC_DISK_VIDEO)) {
+    if (!simulator.CameraSimulator_Initialize(FrameSourceType::E_FRMSRC_DISK_VIDEO)) {
         CAMSIMLOG_ERROR("Failed to initialize simulator.\n");
         return 1;
     }

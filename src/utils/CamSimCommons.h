@@ -50,7 +50,7 @@ enum class CamSimStatusType : int
 #define MAX_FRAME_CHANNELS                                      4       //ARGB channels???
 
 
-enum class IFrameFormat 
+enum class FrameFormat 
 { 
     E_UNKNOWN = -1,
     E_GRAY8 = 0,
@@ -60,32 +60,32 @@ enum class IFrameFormat
     E_UYVY 
 };
 
-enum class IFrameSourceType : int
+enum class FrameSourceType : int
 {
     E_FRMSRC_UNKNOWN = -1,
     E_FRMSRC_DISK_VIDEO = 0,
     E_FRMSRC_TYPES_TOTAL
 };
 
-typedef struct IFrame {
+typedef struct Frame {
     std::unique_ptr<unsigned char[]> dataOwner = nullptr;
     unsigned char* data = nullptr;
     int width = 0;
     int height = 0;
-    IFrameFormat format = IFrameFormat::E_UNKNOWN;
+    FrameFormat format = FrameFormat::E_UNKNOWN;
     std::chrono::steady_clock::time_point timestamp;
     int frameSize = 0;
 
-    ~IFrame()
+    ~Frame()
     {
         data = nullptr;
         width = 0;
         height = 0;
-        format = IFrameFormat::E_UNKNOWN;
+        format = FrameFormat::E_UNKNOWN;
         frameSize = 0;
     }
 
-    void ShallowCopy(IFrame& frame)
+    void ShallowCopy(Frame& frame)
     {
         data = frame.dataOwner.get();
         width = frame.width;
@@ -94,4 +94,16 @@ typedef struct IFrame {
         frameSize = frame.frameSize;
         timestamp = frame.timestamp;
     }
-}IFrame;
+}Frame;
+
+
+// Timer Macros
+#define ONE_MICROSECOND_IN_us                                           1
+#define ONE_MILLISECOND_IN_us                                           (ONE_MICROSECOND_IN_us * 1000)
+#define ONE_SECOND_IN_us                                                (ONE_MILLISECOND_IN_us * 1000)
+#define ONE_MILLISECOND_IN_ms                                           1
+#define ONE_SECOND_IN_ms                                                (ONE_MILLISECOND_IN_ms * 1000)
+#define ONE_MICROSECOND_IN_ms                                           (ONE_MILLISECOND_IN_ms / 1000)
+#define ONE_SECOND_IN_s                                                 1
+#define ONE_MILLISECOND_IN_s                                            (ONE_SECOND_IN_s       / 1000)
+#define ONE_MICROSECOND_IN_s                                            (ONE_MILLISECOND_IN_s  / 1000)

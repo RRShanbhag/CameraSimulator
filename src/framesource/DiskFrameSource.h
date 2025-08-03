@@ -38,19 +38,19 @@ public:
     DiskFrameSource(DiskFrameSource&& other) noexcept;
     DiskFrameSource& operator=(DiskFrameSource&& other) noexcept;
 
-    CamSimStatusType IFrameSource_Init(std::string location, int width, int height, IFrameFormat fmt, int fps, bool loop) override;
-    CamSimStatusType IFrameSource_GetNextFrame(IFrame& frame) override;
+    CamSimStatusType IFrameSource_Init(std::string location, int width, int height, FrameFormat fmt, int fps, bool loop) override;
+    CamSimStatusType IFrameSource_GetNextFrame(Frame& frame) override;
     CamSimStatusType IFrameSource_Start() override;
     CamSimStatusType IFrameSource_Stop() override;
 
 private:
-    int CalculateFrameSize(int width, int height, IFrameFormat fmt);
+    int CalculateFrameSize(int width, int height, FrameFormat fmt);
     int PopulateVideoFiles(const std::string& directoryPath, std::vector<std::string>& FilePaths);
-    AVPixelFormat GetAVPixelFormatFromIFrameFormat(IFrameFormat fmt);
-    IFrameFormat GetIFrameFormatFromAVPixelFormat(AVPixelFormat fmt);
+    AVPixelFormat GetAVPixelFormatFromIFrameFormat(FrameFormat fmt);
+    FrameFormat GetIFrameFormatFromAVPixelFormat(AVPixelFormat fmt);
 
 public: 
     std::vector<std::string>& GetFilePaths();
-    IFrame* GetCurrentFrame();
+    Frame* GetCurrentFrame();
 
 };

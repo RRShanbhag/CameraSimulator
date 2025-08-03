@@ -24,7 +24,7 @@ protected:
         }
     }
 
-    void InitializeDiskFrameSource(DiskFrameSource& framesource, int width, int height, IFrameFormat fmt, int fps, bool loop)
+    void InitializeDiskFrameSource(DiskFrameSource& framesource, int width, int height, FrameFormat fmt, int fps, bool loop)
     {
         std::string dataDir = "./../data";
         CamSimStatusType result = framesource.IFrameSource_Init(dataDir, width, height, fmt, fps, loop);
@@ -41,7 +41,7 @@ TEST_F(DiskFrameSourceTest, InitWithValidVideoFiles) {
     CreateFiles({"v1.mp4", "v2.avi", "notes.txt", "clip.mkv"});
 
     DiskFrameSource source;
-    CamSimStatusType result = source.IFrameSource_Init(testDir, 640, 480, IFrameFormat::E_RGB, 30, false);
+    CamSimStatusType result = source.IFrameSource_Init(testDir, 640, 480, FrameFormat::E_RGB, 30, false);
 
     EXPECT_EQ(result, CamSimStatusType::E_STATUS_SUCCESS);
     EXPECT_EQ(source.GetFilePaths().size(), 3);
@@ -54,7 +54,7 @@ TEST_F(DiskFrameSourceTest, InitWithValidVideoFiles) {
 TEST_F(DiskFrameSourceTest, InitWithNoFiles) {
     CAMSIMLOG_INFO("DiskFrameSourceTest::InitWithNoFiles");
     DiskFrameSource source;
-    CamSimStatusType result = source.IFrameSource_Init(testDir, 320, 240, IFrameFormat::E_GRAY8, 15, true);
+    CamSimStatusType result = source.IFrameSource_Init(testDir, 320, 240, FrameFormat::E_GRAY8, 15, true);
 
     EXPECT_EQ(result, CamSimStatusType::E_STATUS_FAILURE);
     EXPECT_TRUE(source.GetFilePaths().empty());
@@ -69,7 +69,7 @@ TEST(DiskFrameSourceStandaloneTest, InitWithInvalidDirectory) {
     std::string invalidPath = "nonexistent_directory";
     DiskFrameSource source;
 
-    CamSimStatusType result = source.IFrameSource_Init(invalidPath, 640, 480, IFrameFormat::E_UYVY, 25, false);
+    CamSimStatusType result = source.IFrameSource_Init(invalidPath, 640, 480, FrameFormat::E_UYVY, 25, false);
     EXPECT_EQ(result, CamSimStatusType::E_STATUS_FAILURE);
     EXPECT_TRUE(source.GetFilePaths().empty());
 }
@@ -83,9 +83,9 @@ TEST_F(DiskFrameSourceTest, FrameBufferAllocatedProperly) {
     CreateFiles({"video.mp4"});
     DiskFrameSource source;
 
-    source.IFrameSource_Init(testDir, 128, 64, IFrameFormat::E_GRAY16, 10, false);
+    source.IFrameSource_Init(testDir, 128, 64, FrameFormat::E_GRAY16, 10, false);
 
-    IFrame* frame = source.GetCurrentFrame(); 
+    Frame* frame = source.GetCurrentFrame(); 
     ASSERT_NE(frame, nullptr);
     EXPECT_EQ(frame->width, 128);
     EXPECT_EQ(frame->height, 64);
@@ -102,8 +102,8 @@ TEST_F(DiskFrameSourceTest, InitTwiceWithoutReset) {
     CreateFiles({"a.mp4"});
     DiskFrameSource source;
 
-    source.IFrameSource_Init(testDir, 128, 128, IFrameFormat::E_BGR, 30, true);
-    CamSimStatusType result = source.IFrameSource_Init(testDir, 256, 256, IFrameFormat::E_RGB, 60, false);
+    source.IFrameSource_Init(testDir, 128, 128, FrameFormat::E_BGR, 30, true);
+    CamSimStatusType result = source.IFrameSource_Init(testDir, 256, 256, FrameFormat::E_RGB, 60, false);
     
     EXPECT_EQ(result, CamSimStatusType::E_STATUS_FAILURE);
 }
@@ -114,7 +114,7 @@ TEST_F(DiskFrameSourceTest, InitTwiceWithoutReset) {
  */
 TEST_F(DiskFrameSourceTest, StartShouldReturnSuccess) {
     DiskFrameSource framesource;
-    InitializeDiskFrameSource(framesource, 1280, 720, IFrameFormat::E_RGB, 60, false);
+    InitializeDiskFrameSource(framesource, 1280, 720, FrameFormat::E_RGB, 60, false);
     CamSimStatusType status = framesource.IFrameSource_Start();
     EXPECT_EQ(status, CamSimStatusType::E_STATUS_SUCCESS);
 }
@@ -126,11 +126,11 @@ TEST_F(DiskFrameSourceTest, StartShouldReturnSuccess) {
 TEST_F(DiskFrameSourceTest, GetNextFrameReturnsValidFrame) {
 
     DiskFrameSource framesource;
-    InitializeDiskFrameSource(framesource, 1280, 720, IFrameFormat::E_RGB, 60, false);
+    InitializeDiskFrameSource(framesource, 1280, 720, FrameFormat::E_RGB, 60, false);
     CamSimStatusType status = framesource.IFrameSource_Start();
     EXPECT_EQ(status, CamSimStatusType::E_STATUS_SUCCESS);
 
-    IFrame frame;
+    Frame frame;
     status = framesource.IFrameSource_GetNextFrame(frame);
 
     EXPECT_EQ(status, CamSimStatusType::E_STATUS_SUCCESS);
@@ -144,7 +144,7 @@ TEST_F(DiskFrameSourceTest, GetNextFrameReturnsValidFrame) {
  */
 TEST_F(DiskFrameSourceTest, StopShouldReturnSuccess) {
     DiskFrameSource framesource;
-    InitializeDiskFrameSource(framesource, 1280, 720, IFrameFormat::E_RGB, 60, false);
+    InitializeDiskFrameSource(framesource, 1280, 720, FrameFormat::E_RGB, 60, false);
     CamSimStatusType status = framesource.IFrameSource_Start();
     status = framesource.IFrameSource_Stop();
     EXPECT_EQ(status, CamSimStatusType::E_STATUS_SUCCESS);
@@ -156,8 +156,8 @@ TEST_F(DiskFrameSourceTest, StopShouldReturnSuccess) {
  */
 TEST_F(DiskFrameSourceTest, GetNextFrameWithoutStartReturnsSuccess) {
     DiskFrameSource framesource;
-    InitializeDiskFrameSource(framesource, 1280, 720, IFrameFormat::E_RGB, 60, false);
-    IFrame frame;
+    InitializeDiskFrameSource(framesource, 1280, 720, FrameFormat::E_RGB, 60, false);
+    Frame frame;
     CamSimStatusType status = framesource.IFrameSource_GetNextFrame(frame);
     EXPECT_EQ(status, CamSimStatusType::E_STATUS_FAILURE);  // or FAILURE based on your logic
 }
@@ -169,7 +169,7 @@ TEST_F(DiskFrameSourceTest, GetNextFrameWithoutStartReturnsSuccess) {
  */
 TEST_F(DiskFrameSourceTest, StopWithoutStartStillReturnsSuccess) {
     DiskFrameSource framesource;
-    InitializeDiskFrameSource(framesource, 1280, 720, IFrameFormat::E_RGB, 60, false);
+    InitializeDiskFrameSource(framesource, 1280, 720, FrameFormat::E_RGB, 60, false);
     CamSimStatusType status = framesource.IFrameSource_Stop();
     EXPECT_EQ(status, CamSimStatusType::E_STATUS_SUCCESS);  // or handled gracefully
 }

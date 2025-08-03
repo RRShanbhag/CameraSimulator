@@ -3,8 +3,8 @@
 #include "../utils/CamSimCommons.h"
 class CameraSimulator {
 public:
-    IFrameSourceType m_eSourceType = IFrameSourceType::E_FRMSRC_UNKNOWN;
+    FrameSourceType m_eSourceType = FrameSourceType::E_FRMSRC_UNKNOWN;
 public:
-    bool CameraSimulator_Initialize(IFrameSourceType eSourceType);
+    bool CameraSimulator_Initialize(FrameSourceType eSourceType);
     void CameraSimulator_Run();
 };

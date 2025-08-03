@@ -3,7 +3,7 @@
 #include "DiskFrameSource.h"
 #include "../utils/CamSimLogger.h"
 
-FrameSourceRunner::FrameSourceRunner(IFrameSourceType sourceType)
+FrameSourceRunner::FrameSourceRunner(FrameSourceType sourceType)
 {
     // optional: validate source
     std::string filesrcdir = "./../data"; 
@@ -11,10 +11,10 @@ FrameSourceRunner::FrameSourceRunner(IFrameSourceType sourceType)
     int outFileSrcHeight = 720;
     int outFileSrcFPS = 60;
     bool outFileSrcLoopback = false;
-    IFrameFormat outFileSrcFmt = IFrameFormat::E_RGB;
+    FrameFormat outFileSrcFmt = FrameFormat::E_RGB;
     switch (sourceType)
     {
-        case IFrameSourceType::E_FRMSRC_DISK_VIDEO:
+        case FrameSourceType::E_FRMSRC_DISK_VIDEO:
         {
             m_source = std::make_shared<DiskFrameSource>();
             if(m_source->IFrameSource_Init(filesrcdir, outFileSrcWidth, outFileSrcHeight, outFileSrcFmt, outFileSrcFPS, outFileSrcLoopback) != CamSimStatusType::E_STATUS_SUCCESS)
@@ -66,7 +66,7 @@ FrameSourceRunner& FrameSourceRunner::operator=(FrameSourceRunner&& other) noexc
     return *this;
 }
 
-CamSimStatusType FrameSourceRunner::FrameSource_Run(std::function<void(const IFrame&, CamSimErrorType eError, CamSimStatusType eStatus)> frameCallback)
+CamSimStatusType FrameSourceRunner::FrameSource_Run(std::function<void(const Frame&, CamSimErrorType eError, CamSimStatusType eStatus)> frameCallback)
 {
     
     if (m_running || !m_source)
@@ -81,7 +81,7 @@ CamSimStatusType FrameSourceRunner::FrameSource_Run(std::function<void(const IFr
     }
 
     m_worker = std::thread([this, callback = std::move(frameCallback)] {
-        IFrame frame;
+        Frame frame;
         CamSimStatusType eStatus = CamSimStatusType::E_STATUS_SUCCESS;
         while (m_running)
         {

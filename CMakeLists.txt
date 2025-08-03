@@ -43,6 +43,13 @@ FetchContent_MakeAvailable(googletest)
 # --------------------------
 # FrameSource Library
 # --------------------------
+file(GLOB PROFILER_SRC CONFIGURE_DEPENDS "src/profiler/*.cpp")
+add_library(Profiler ${PROFILER_SRC})
+target_include_directories(Profiler PUBLIC ${CMAKE_SOURCE_DIR}/src/profiler)
+
+# --------------------------
+# FrameSource Library
+# --------------------------
 file(GLOB FRAME_SRC CONFIGURE_DEPENDS "src/framesource/*.cpp")
 add_library(FrameSource ${FRAME_SRC})
 target_include_directories(FrameSource PUBLIC ${CMAKE_SOURCE_DIR}/src/framesource ${CMAKE_SOURCE_DIR}/src/utils ${FFMPEG_INCLUDE_DIRS})
@@ -55,7 +62,7 @@ file(GLOB SIM_SRC CONFIGURE_DEPENDS "src/simulator/*.cpp")
 file(GLOB UTILS_SRC CONFIGURE_DEPENDS "src/utils/*.cpp")
 add_library(Simulator ${SIM_SRC} ${UTILS_SRC})
 target_include_directories(Simulator PUBLIC src)
-target_link_libraries(Simulator PUBLIC FrameSource)
+target_link_libraries(Simulator PUBLIC Profiler FrameSource)
 
 # --------------------------
 # Main Executable

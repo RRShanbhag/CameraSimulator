@@ -5,7 +5,7 @@
 
 #include <sstream>
 
-bool CameraSimulator::CameraSimulator_Initialize(IFrameSourceType eSourceType) {
+bool CameraSimulator::CameraSimulator_Initialize(FrameSourceType eSourceType) {
     CAMSIMLOG_INFO("[Simulator] Initializing...");
     m_eSourceType = eSourceType;
     return true;
@@ -17,7 +17,7 @@ void CameraSimulator::CameraSimulator_Run() {
     FrameSourceRunner runner(m_eSourceType);
     int frameCount = 0;
     bool simulatorStop = false;
-    runner.FrameSource_Run([&](const IFrame& frame, CamSimErrorType eError, CamSimStatusType eStatus) {
+    runner.FrameSource_Run([&](const Frame& frame, CamSimErrorType eError, CamSimStatusType eStatus) {
         std::cout << "[Simulator]: Received Frame No:" << frameCount << std::endl;
 
         std::string FrameFileName = "DiskFrame_" + std::to_string(frameCount) + ".raw";

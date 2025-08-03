@@ -81,7 +81,7 @@ DiskFrameSource& DiskFrameSource::operator=(DiskFrameSource&& other) noexcept
  * @param loop: Loopback enabled or not.
  * @return CamSimStatusType 
  */
-CamSimStatusType DiskFrameSource::IFrameSource_Init(std::string location, int width, int height, IFrameFormat fmt, int fps, bool loop)
+CamSimStatusType DiskFrameSource::IFrameSource_Init(std::string location, int width, int height, FrameFormat fmt, int fps, bool loop)
 {
     CamSimStatusType eStatus = CamSimStatusType::E_STATUS_SUCCESS;
     CamSimErrorType eError = CamSimErrorType::E_ERRORCODE_NOERROR;
@@ -92,11 +92,11 @@ CamSimStatusType DiskFrameSource::IFrameSource_Init(std::string location, int wi
     }
     else
     {
-        if(width < 0 || height < 0 || fmt == IFrameFormat::E_UNKNOWN)
+        if(width < 0 || height < 0 || fmt == FrameFormat::E_UNKNOWN)
         {
             CAMSIMLOG_INFO("Frame Format is unknown. Frame format shall be obtained directly from video meta data.");
         }
-        this->m_pCurrentFrame = new IFrame();
+        this->m_pCurrentFrame = new Frame();
         this->m_pCurrentFrame->width = width;
         this->m_pCurrentFrame->height = height;
         this->m_pCurrentFrame->format = fmt;
@@ -125,7 +125,7 @@ CamSimStatusType DiskFrameSource::IFrameSource_Init(std::string location, int wi
     return eStatus;
 }
 
-CamSimStatusType DiskFrameSource::IFrameSource_GetNextFrame(IFrame& frame)
+CamSimStatusType DiskFrameSource::IFrameSource_GetNextFrame(Frame& frame)
 {
     CamSimStatusType eStatus = CamSimStatusType::E_STATUS_SUCCESS;
     CamSimErrorType eError = CamSimErrorType::E_ERRORCODE_NOERROR;
@@ -169,7 +169,7 @@ CamSimStatusType DiskFrameSource::IFrameSource_GetNextFrame(IFrame& frame)
                         m_pAVCodecCtx->height,
                         dstData, dstLinesize);
 
-                // Set IFrame metadata
+                // Set Frame metadata
                 frame.ShallowCopy(*(this->m_pCurrentFrame));
 
                 break; // Successfully read one frame
@@ -354,36 +354,36 @@ CamSimStatusType DiskFrameSource::IFrameSource_Stop()
     return eStatus;
 }
 
-int DiskFrameSource::CalculateFrameSize(int width, int height, IFrameFormat fmt)
+int DiskFrameSource::CalculateFrameSize(int width, int height, FrameFormat fmt)
 {
     CamSimErrorType eError = CamSimErrorType::E_ERRORCODE_NOERROR;
     int nFrameSize = 0;
 
     switch(fmt)
     {
-        case IFrameFormat::E_GRAY8:
+        case FrameFormat::E_GRAY8:
         {
             nFrameSize = width * height * 1;
             CAMSIMLOG_INFO("GRAY8 Format: Setting Frame Size: %d", nFrameSize);
             break;
         }
 
-        case IFrameFormat::E_GRAY16:
+        case FrameFormat::E_GRAY16:
         {
             nFrameSize = width * height * 2;
             CAMSIMLOG_INFO("GRAY16 Format: Setting Frame Size: %d", nFrameSize);
             break;
         } 
 
-        case IFrameFormat::E_RGB:
-        case IFrameFormat::E_BGR:
+        case FrameFormat::E_RGB:
+        case FrameFormat::E_BGR:
         {
             nFrameSize = width * height * 3;
             CAMSIMLOG_INFO("RGB/BGR Format: Setting Frame Size: %d", nFrameSize);
             break;
         }
 
-        case IFrameFormat::E_UYVY:
+        case FrameFormat::E_UYVY:
         {
             nFrameSize = width * height * 2;
             CAMSIMLOG_INFO("UYVY Format: Setting Frame Size: %d", nFrameSize);
@@ -454,38 +454,38 @@ std::vector<std::string>& DiskFrameSource::GetFilePaths()
     return m_FilePaths;
 }
 
-IFrame* DiskFrameSource::GetCurrentFrame()
+Frame* DiskFrameSource::GetCurrentFrame()
 {
     return m_pCurrentFrame;
 }
 
-AVPixelFormat DiskFrameSource::GetAVPixelFormatFromIFrameFormat(IFrameFormat fmt)
+AVPixelFormat DiskFrameSource::GetAVPixelFormatFromIFrameFormat(FrameFormat fmt)
 {
     CamSimErrorType eError = CamSimErrorType::E_ERRORCODE_NOERROR;
     AVPixelFormat avPixFmt = AVPixelFormat::AV_PIX_FMT_NONE;
 
     switch(fmt)
     {
-        case IFrameFormat::E_GRAY8:
+        case FrameFormat::E_GRAY8:
         {
             avPixFmt = AVPixelFormat::AV_PIX_FMT_GRAY8;
             break;
         }
 
-        case IFrameFormat::E_GRAY16:
+        case FrameFormat::E_GRAY16:
         {
             avPixFmt = AVPixelFormat::AV_PIX_FMT_GRAY16LE;
             break;
         } 
 
-        case IFrameFormat::E_RGB:
-        case IFrameFormat::E_BGR:
+        case FrameFormat::E_RGB:
+        case FrameFormat::E_BGR:
         {
             avPixFmt = AVPixelFormat::AV_PIX_FMT_RGB24;
             break;
         }
 
-        case IFrameFormat::E_UYVY:
+        case FrameFormat::E_UYVY:
         {
             avPixFmt = AVPixelFormat::AV_PIX_FMT_UYVY422;
             break;
@@ -507,45 +507,45 @@ AVPixelFormat DiskFrameSource::GetAVPixelFormatFromIFrameFormat(IFrameFormat fmt
     return avPixFmt;
 }
 
-IFrameFormat DiskFrameSource::GetIFrameFormatFromAVPixelFormat(AVPixelFormat fmt)
+FrameFormat DiskFrameSource::GetIFrameFormatFromAVPixelFormat(AVPixelFormat fmt)
 {
     CamSimErrorType eError = CamSimErrorType::E_ERRORCODE_NOERROR;
-    IFrameFormat iFrameFmt = IFrameFormat::E_UNKNOWN;
+    FrameFormat iFrameFmt = FrameFormat::E_UNKNOWN;
 
     switch(fmt)
     {
         case AVPixelFormat::AV_PIX_FMT_GRAY8:
         {
-            iFrameFmt = IFrameFormat::E_GRAY8;
+            iFrameFmt = FrameFormat::E_GRAY8;
             break;
         }
 
         case AVPixelFormat::AV_PIX_FMT_GRAY16LE:
         {
-            iFrameFmt = IFrameFormat::E_GRAY16;
+            iFrameFmt = FrameFormat::E_GRAY16;
             break;
         } 
 
         case AVPixelFormat::AV_PIX_FMT_BGR24:
         {
-            iFrameFmt = IFrameFormat::E_BGR; 
+            iFrameFmt = FrameFormat::E_BGR; 
             break;
         }
         case AVPixelFormat::AV_PIX_FMT_RGB24:
         {
-            iFrameFmt = IFrameFormat::E_RGB;
+            iFrameFmt = FrameFormat::E_RGB;
             break;
         }
 
         case AVPixelFormat::AV_PIX_FMT_UYVY422:
         {
-            iFrameFmt = IFrameFormat::E_UYVY;
+            iFrameFmt = FrameFormat::E_UYVY;
             break;
         } 
 
         default:
         {
-            iFrameFmt = IFrameFormat::E_UNKNOWN;
+            iFrameFmt = FrameFormat::E_UNKNOWN;
             eError = CamSimErrorType::E_ERRORCODE_UNKNOWN_FORMAT;
             break;
         }

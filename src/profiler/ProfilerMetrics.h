@@ -85,7 +85,5 @@ public:
     // return average execution duration
     const std::chrono::microseconds GetAverageStageDuration();
 };
-
-class FrameMetrics
 } 
 
